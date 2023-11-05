@@ -1,6 +1,8 @@
 import socket
 import time
 
+__all__ = ["TCPServer"]
+
 class TCPServer:
     def __init__ (self, host: tuple, request_handler) -> None:
         """
@@ -43,7 +45,7 @@ class TCPServer:
 
     def stop (self):
         self.is_running = False
-        self.serv_sock.close ()
+        self.serv_sork.close ()
 
 
 if __name__ == "__main__":
