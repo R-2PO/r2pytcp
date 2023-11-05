@@ -1,4 +1,4 @@
-# r2pytcpserver
+# r2pytcp
 A TCP server with handlers, but made by me
 
 ## Description
