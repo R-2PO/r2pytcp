@@ -48,6 +48,15 @@ class TCPServer:
         self.serv_sork.close ()
 
 
+
+
+class EchoHandler:
+    def __init__ (self, client_socket: socket.socket):
+        pass
+
+
+
+
 if __name__ == "__main__":
     server = TCPServer(("127.0.0.1", 80), None)
     try:
