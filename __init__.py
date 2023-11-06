@@ -58,7 +58,7 @@ class EchoHandler:
 
 
 if __name__ == "__main__":
-    server = TCPServer(("127.0.0.1", 80), None)
+    server = TCPServer(("127.0.0.1", 80), EchoHandler)
     try:
         server.run()
     except KeyboardInterrupt:
