@@ -1,6 +1,8 @@
 import socket
 import time
 
+import sockutils
+
 __all__ = ["TCPServer"]
 
 class TCPServer:
@@ -52,13 +54,22 @@ class TCPServer:
 
 class EchoHandler:
     def __init__ (self, client_socket: socket.socket):
-        pass
+        """
+        A basic echo handler for a TCPServer
+        Prints and sends back any data sent by the client
+
+        Arguments:
+            -client_socket: the socket between the server and the client
+        """
+        data = sockutils.recv_until_end(client_socket)
+        client_socket.send(data)
+        print(data.decode())
 
 
 
 
 if __name__ == "__main__":
-    server = TCPServer(("127.0.0.1", 80), EchoHandler)
+    server = TCPServer(("127.0.0.1", 3500), EchoHandler)
     try:
         server.run()
     except KeyboardInterrupt:
