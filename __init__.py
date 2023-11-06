@@ -45,7 +45,7 @@ class TCPServer:
 
     def stop (self):
         self.is_running = False
-        self.serv_sork.close ()
+        self.serv_sock.close ()
 
 
 
