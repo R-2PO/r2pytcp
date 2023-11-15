@@ -6,7 +6,7 @@ import sockutils
 __all__ = ["TCPServer"]
 
 class TCPServer:
-    def __init__ (self, host: tuple, request_handler) -> None:
+    def __init__ (self, host: tuple, request_handler, **kwargs) -> None:
         """
         Create a TCP server
         
@@ -14,11 +14,17 @@ class TCPServer:
             -host: server address in a tuple as (address, port)
             -request_handler: a request handler object
         """
+        #TODO: Check all the kwargs
 
         self.host = host
         self.address = host[0]
         self.port = host[1]
         self.handler = request_handler
+        self.allow_reuse_port = False
+
+        if "allow_reuse_port" in kwargs:
+            assert type(kwargs["allow_reuse_port"])==bool, f"Argument 'allow_reuse_port' should be of type bool, not {type(kwargs['allow_reuse_port'])}"
+            self.allow_reuse_port = kwargs["allow_reuse_port"]
 
         self.is_running = True
 
@@ -69,7 +75,7 @@ class EchoHandler:
 
 
 if __name__ == "__main__":
-    server = TCPServer(("127.0.0.1", 3500), EchoHandler)
+    server = TCPServer(("127.0.0.1", 3500), EchoHandler, allow_reuse_port=True)
     try:
         server.run()
     except KeyboardInterrupt:
