@@ -73,9 +73,28 @@ class EchoHandler:
 
 
 
+class HTTPHandler:
+    def __init__ (self, client_socket: socket.socket):
+        """
+        A basic HTTP handler for a TCPServer
+        You can add any feature you want by adding or changing functions.
 
+        Arguments:
+            -client_socket: the socket between the server and the client
+        """
+
+        #Get the request line
+        self.request_line = b""
+        while self.request_line[-2:] != b"\r\n":
+            self.request_line += client_socket.recv(1)
+        print(self.request_line)
+
+
+
+
+#Example
 if __name__ == "__main__":
-    server = TCPServer(("127.0.0.1", 3500), EchoHandler, allow_reuse_port=True)
+    server = TCPServer(("0.0.0.0", 3500), HTTPHandler, allow_reuse_port=True)
     try:
         server.run()
     except KeyboardInterrupt:
