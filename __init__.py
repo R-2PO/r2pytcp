@@ -89,7 +89,22 @@ class HTTPHandler:
             self.request_line += client_socket.recv(1)
         self.request_line = self.request_line[:-2].decode("iso-8859-1")
         self.method, self.path, self.request_version = self.request_line.split(" ", 2)
-        print(f"Method: {self.method}\nPath: {self.path}\nVersion: {self.request_version}")
+
+        #Get the headers
+        self.headers = {}
+        while True:
+            header_line = client_socket.recv(2)
+            while header_line[-2:] != b"\r\n":
+                header_line += client_socket.recv(1)
+                
+            #Detect the end of the headers
+            if header_line == b"\r\n":
+                break
+            #Decode the header line
+            header_line = header_line.decode("iso-8859-1")
+            #Store the header
+            self.headers[header_line.split(": ", 1)[0]] = header_line.split(": ", 1)[1][:-2]
+        print(self.headers)
 
 
 
