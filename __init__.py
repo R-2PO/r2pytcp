@@ -91,7 +91,7 @@ class HTTPHandler:
         self.method, self.path, self.request_version = self.request_line.split(" ", 2)
 
         #Get the headers
-        self.headers = {}
+        self.request_headers = {}
         while True:
             header_line = client_socket.recv(2)
             while header_line[-2:] != b"\r\n":
@@ -103,8 +103,7 @@ class HTTPHandler:
             #Decode the header line
             header_line = header_line.decode("iso-8859-1")
             #Store the header
-            self.headers[header_line.split(": ", 1)[0]] = header_line.split(": ", 1)[1][:-2]
-        print(self.headers)
+            self.request_headers[header_line.split(": ", 1)[0]] = header_line.split(": ", 1)[1][:-2]
 
 
 
