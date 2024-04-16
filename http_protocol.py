@@ -1,6 +1,6 @@
 #Information used for the HTTP protocol
 
-MESSAGES = {
+STATUS_TEXTS = {
     100: "Continue",
     101: "Switching Protocols",
     102: "Processing",
