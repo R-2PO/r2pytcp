@@ -1,7 +1,8 @@
 import socket
 import time
 
-import sockutils
+import r2pytcp.sockutils as sockutils
+import r2pytcp.http_protocol as http_protocol
 
 __all__ = ["TCPServer"]
 
@@ -52,6 +53,9 @@ class TCPServer:
         self.serv_sock.close()
 
     def stop (self):
+        """
+        Stop the server
+        """
         self.is_running = False
         self.serv_sock.close ()
 
@@ -74,6 +78,9 @@ class EchoHandler:
 
 
 class HTTPHandler:
+
+    is_request = True #Weather or not a request was sent (workaround, see lower)
+    
     def __init__ (self, client_socket: socket.socket):
         """
         A basic HTTP handler for a TCPServer
@@ -83,10 +90,17 @@ class HTTPHandler:
             -client_socket: the socket between the server and the client
         """
 
+        self.client_socket = client_socket
+
         #Get the request line
         self.request_line = b""
         while self.request_line[-2:] != b"\r\n":
             self.request_line += client_socket.recv(1)
+            # WORKAROUND UNTIL I IMPLEMENT THREADING TO FORCE CLOSE USELESS CONNECTIONS OPENED BY BROWSERS
+            if self.request_line == b"":
+                self.is_request = False
+                self.close()
+                return None
         self.request_line = self.request_line[:-2].decode("iso-8859-1")
         self.method, self.path, self.request_version = self.request_line.split(" ", 2)
 
@@ -104,6 +118,41 @@ class HTTPHandler:
             header_line = header_line.decode("iso-8859-1")
             #Store the header
             self.request_headers[header_line.split(": ", 1)[0]] = header_line.split(": ", 1)[1][:-2]
+
+        self.headers = {} #Response headers
+
+    def send_response (self, code: int, status_text: int=None, version: str="HTTP/1.1"):
+        """
+        Send the status line corresponding to the status code, message and protocol version specified
+        
+        Arguments:
+            -code: the HTTP status code to send
+            -status_text: the HTTP status text to send, automatically set if is None
+            -version: the HTTP protocol version used as a string, defaults to 'HTTP/1.1'
+        """
+        if not status_text:
+            if code in http_protocol.STATUS_TEXTS:
+                status_text = http_protocol.STATUS_TEXTS[code]
+            else:
+                raise ValueError(f"Unknown status code: {code}, please specify a status text")
+
+        self.client_socket.send(f"{version} {code} {status_text}\r\n".encode("iso-8859-1"))
+
+    def send_headers (self):
+        """
+        Send the headers in self.headers using the TCPServer.
+        Should only be used after sending the status line, by using self.send_response or custom code.
+        """
+        for header in self.headers:
+            self.client_socket.send(f"{header}: {self.headers[header]}\r\n".encode("iso-8859-1"))
+        self.client_socket.send(b"\r\n") #End the headers section
+
+    def close (self):
+        """
+        Close the socket
+        """
+        self.client_socket.shutdown(socket.SHUT_RDWR)
+        self.client_socket.close()
 
 
 
