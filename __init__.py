@@ -77,6 +77,26 @@ class EchoHandler:
 
 
 
+class BaseTCPHandler:
+    def __init__ (self, client_socket: socket.socket):
+        """
+        A basic TCP handler, does nothing but has some useful functions
+
+        Arguments:
+            -client_socket: the socket between the server and the client
+        """
+        self.client_socket = client_socket
+
+    def close(self):
+        """
+        Close the socket with the client
+        """
+        self.client_socket.shutdown(socket.SHUT_RDWR)
+        self.client_socket.close()
+
+
+
+
 class HTTPHandler:
 
     is_request = True #Weather or not a request was sent (workaround, see lower)
