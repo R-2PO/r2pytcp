@@ -153,14 +153,3 @@ class HTTPHandler:
         """
         self.client_socket.shutdown(socket.SHUT_RDWR)
         self.client_socket.close()
-
-
-
-
-#Example
-if __name__ == "__main__":
-    server = TCPServer(("0.0.0.0", 3500), HTTPHandler, allow_reuse_port=True)
-    try:
-        server.run()
-    except KeyboardInterrupt:
-        server.stop()
