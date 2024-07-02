@@ -1,4 +1,5 @@
 import socket
+import threading
 import time
 
 import r2pytcp.sockutils as sockutils
@@ -44,10 +45,9 @@ class TCPServer:
             client_sock, client_host = self.serv_sock.accept()
 
             #Handle the request
-            self.handler(client_sock)
-        
-            #Close the connection
-            client_sock.close()
+            thread = threading.Thread(target=self.handler, args=[client_sock])
+            thread.daemon = True
+            thread.start()
         
         #Close the socket
         self.serv_sock.close()
@@ -74,6 +74,8 @@ class EchoHandler:
         data = sockutils.recv_until_end(client_socket)
         client_socket.send(data)
         print(data.decode())
+        client_socket.shutdown(socket.SHUT_RDWR)
+        client_socket.close()
 
 
 
