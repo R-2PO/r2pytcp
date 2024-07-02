@@ -98,9 +98,6 @@ class BaseTCPHandler:
 
 
 class HTTPHandler:
-
-    is_request = True #Weather or not a request was sent (workaround, see lower)
-    
     def __init__ (self, client_socket: socket.socket):
         """
         A basic HTTP handler for a TCPServer
@@ -116,11 +113,6 @@ class HTTPHandler:
         self.request_line = b""
         while self.request_line[-2:] != b"\r\n":
             self.request_line += client_socket.recv(1)
-            # WORKAROUND UNTIL I IMPLEMENT THREADING TO FORCE CLOSE USELESS CONNECTIONS OPENED BY BROWSERS
-            if self.request_line == b"":
-                self.is_request = False
-                self.close()
-                return None
         self.request_line = self.request_line[:-2].decode("iso-8859-1")
         self.method, self.path, self.request_version = self.request_line.split(" ", 2)
 
