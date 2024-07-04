@@ -51,6 +51,12 @@ class TCPServer:
         self.serv_sock.close()
 
     def handle_request (self, client_sock: socket.socket):
+        """
+        Called when a new client connects
+
+        Arguments:
+            -client_socket: the socket between the server and the client
+        """
         self.handler(client_sock)
 
     def stop (self):
@@ -64,10 +70,23 @@ class TCPServer:
 
 
 class ThreadTCPServer (TCPServer):
-    def __init__ (self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__ (self, host: tuple, request_handler, *args, **kwargs):
+        """
+        Create a TCP server that creates a new thread for each connection
+
+        Arguments:
+            -host: server address in a tuple as (address, port)
+            -request_handler: a request handler object
+        """
+        super().__init__(host, request_handler, *args, **kwargs)
 
     def handle_request (self, client_sock: socket.socket):
+        """
+        Called when a new client connects
+
+        Arguments:
+            -client_socket: the socket between the server and the client
+        """
         thread = threading.Thread(target=self.handler, args=[client_sock])
         thread.daemon = True
         thread.start()
