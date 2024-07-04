@@ -51,7 +51,6 @@ class TCPServer:
         self.serv_sock.close()
 
     def handle_request (self, client_sock: socket.socket):
-        print("Not threaded")
         self.handler(client_sock)
 
     def stop (self):
@@ -69,7 +68,6 @@ class ThreadTCPServer (TCPServer):
         super().__init__(*args, **kwargs)
 
     def handle_request (self, client_sock: socket.socket):
-        print("Threaded")
         thread = threading.Thread(target=self.handler, args=[client_sock])
         thread.daemon = True
         thread.start()
@@ -113,7 +111,7 @@ class BaseTCPHandler:
 
 
 
-class HTTPHandler:
+class HTTPHandler (BaseTCPHandler):
     def __init__ (self, client_socket: socket.socket):
         """
         A basic HTTP handler for a TCPServer
@@ -123,7 +121,7 @@ class HTTPHandler:
             -client_socket: the socket between the server and the client
         """
 
-        self.client_socket = client_socket
+        super().__init__(client_socket)
 
         #Get the request line
         self.request_line = b""
@@ -174,10 +172,3 @@ class HTTPHandler:
         for header in self.headers:
             self.client_socket.send(f"{header}: {self.headers[header]}\r\n".encode("iso-8859-1"))
         self.client_socket.send(b"\r\n") #End the headers section
-
-    def close (self):
-        """
-        Close the socket
-        """
-        self.client_socket.shutdown(socket.SHUT_RDWR)
-        self.client_socket.close()
