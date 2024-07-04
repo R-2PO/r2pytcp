@@ -120,12 +120,21 @@ class BaseTCPHandler:
         """
         self.client_socket = client_socket
 
-    def close(self):
+    def close (self):
         """
         Close the socket with the client
         """
         self.client_socket.shutdown(socket.SHUT_RDWR)
         self.client_socket.close()
+
+    def write (self, data: bytes):
+        """
+        Send data to the client
+
+        Arguments:
+            -data: the data to be sent
+        """
+        self.client_socket.send(data)
 
 
 
@@ -181,7 +190,7 @@ class HTTPHandler (BaseTCPHandler):
             else:
                 raise ValueError(f"Unknown status code: {code}, please specify a status text")
 
-        self.client_socket.send(f"{version} {code} {status_text}\r\n".encode("iso-8859-1"))
+        self.write(f"{version} {code} {status_text}\r\n".encode("iso-8859-1"))
 
     def send_headers (self):
         """
@@ -189,5 +198,5 @@ class HTTPHandler (BaseTCPHandler):
         Should only be used after sending the status line, by using self.send_response or custom code.
         """
         for header in self.headers:
-            self.client_socket.send(f"{header}: {self.headers[header]}\r\n".encode("iso-8859-1"))
-        self.client_socket.send(b"\r\n") #End the headers section
+            self.write(f"{header}: {self.headers[header]}\r\n".encode("iso-8859-1"))
+        self.write(b"\r\n") #End the headers section

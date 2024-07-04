@@ -10,7 +10,7 @@ class Handler (HTTPHandler):
         self.headers["Content-Length"] = "13"
         self.send_response(200)
         self.send_headers()
-        self.client_socket.send(b"Hello, world!")
+        self.write(b"Hello, world!")
         self.close()
 
 if __name__ == "__main__":
