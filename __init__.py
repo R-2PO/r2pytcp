@@ -5,7 +5,7 @@ import time
 import r2pytcp.sockutils as sockutils
 import r2pytcp.http_protocol as http_protocol
 
-__all__ = ["TCPServer", "EchoHandler", "HTTPHandler"]
+__all__ = ["TCPServer", "ThreadTCPServer", "EchoHandler", "HTTPHandler"]
 
 class TCPServer:
     def __init__ (self, host: tuple, request_handler, **kwargs) -> None:
@@ -44,13 +44,15 @@ class TCPServer:
             #Accept a client
             client_sock, client_host = self.serv_sock.accept()
 
-            #Handle the request
-            thread = threading.Thread(target=self.handler, args=[client_sock])
-            thread.daemon = True
-            thread.start()
+            self.handle_request(client_sock)
+
         
         #Close the socket
         self.serv_sock.close()
+
+    def handle_request (self, client_sock: socket.socket):
+        print("Not threaded")
+        self.handler(client_sock)
 
     def stop (self):
         """
@@ -59,6 +61,18 @@ class TCPServer:
         self.is_running = False
         self.serv_sock.close ()
 
+
+
+
+class ThreadTCPServer (TCPServer):
+    def __init__ (self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def handle_request (self, client_sock: socket.socket):
+        print("Threaded")
+        thread = threading.Thread(target=self.handler, args=[client_sock])
+        thread.daemon = True
+        thread.start()
 
 
 
