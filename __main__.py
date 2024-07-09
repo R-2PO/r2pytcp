@@ -5,7 +5,6 @@ class Handler (HTTPHandler):
     def __init__ (self, client_socket):
         super().__init__(client_socket)
         print (client_socket.getsockname()[0], "|", self.path)
-        self.headers["Date"] = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
         self.headers["Content-Type"] = "text/plain"
         self.headers["Content-Length"] = "13"
         self.send_response(200)

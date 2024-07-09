@@ -174,6 +174,7 @@ class HTTPHandler (BaseTCPHandler):
             self.request_headers[header_line.split(": ", 1)[0]] = header_line.split(": ", 1)[1][:-2]
 
         self.headers = {} #Response headers
+        self.headers["Date"] = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
 
     def send_response (self, code: int, status_text: int=None, version: str="HTTP/1.1"):
         """
