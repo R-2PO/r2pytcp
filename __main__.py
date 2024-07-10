@@ -13,7 +13,7 @@ class Handler (HTTPHandler):
         self.close()
 
 if __name__ == "__main__":
-    server = TCPServer(("0.0.0.0", 3500), Handler, allow_reuse_port=True)
+    server = ThreadTCPServer(("0.0.0.0", 3500), Handler, allow_reuse_port=True)
     try:
         server.run()
     except KeyboardInterrupt:
