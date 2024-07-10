@@ -5,7 +5,7 @@ import time
 import r2pytcp.sockutils as sockutils
 import r2pytcp.http_protocol as http_protocol
 
-__all__ = ["TCPServer", "ThreadTCPServer", "EchoHandler", "HTTPHandler"]
+__all__ = ["TCPServer", "ThreadTCPServer", "EchoHandler", "BaseTCPHandler", "HTTPHandler"]
 
 class TCPServer:
     def __init__ (self, host: tuple, request_handler, **kwargs) -> None:
