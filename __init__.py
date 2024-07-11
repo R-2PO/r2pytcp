@@ -157,6 +157,7 @@ class HTTPHandler (BaseTCPHandler):
             self.request_line += client_socket.recv(1)
         self.request_line = self.request_line[:-2].decode("iso-8859-1")
         self.method, self.path, self.request_version = self.request_line.split(" ", 2)
+        if self.path[-1] == "/": self.path = self.path[:-1]
 
         #Get the headers
         self.request_headers = {}
