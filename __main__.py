@@ -4,7 +4,7 @@ import time
 class Handler (HTTPHandler):
     def __init__ (self, client_socket):
         super().__init__(client_socket)
-        print (client_socket.getsockname()[0], "|", self.path)
+        print (client_socket.getpeername()[0], "|", self.path)
         self.headers["Content-Type"] = "text/plain"
         self.headers["Content-Length"] = "13"
         self.send_response(200)
