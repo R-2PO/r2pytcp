@@ -177,7 +177,7 @@ class HTTPHandler (BaseTCPHandler):
         self.headers = {} #Response headers
         self.headers["Date"] = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
 
-    def send_response (self, code: int, status_text: int=None, version: str="HTTP/1.1"):
+    def send_response (self, code: int, status_text: str=None, version: str="HTTP/1.1"):
         """
         Send the status line corresponding to the status code, message and protocol version specified
         
